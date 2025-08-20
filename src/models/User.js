@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+const mongoose = require('mongoose')
 
 const userSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true },  // UID de Firebase
@@ -7,4 +7,4 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ["user", "admin"], default: "user" }
 })
 
-export default mongoose.model("User", userSchema)
+module.exports = mongoose.model('User', userSchema)

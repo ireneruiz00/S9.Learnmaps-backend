@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
-const roadmapSchema = new mongoose.Schema({
-    category: {type: String, required: true}
+const roadmapCategorySchema = new mongoose.Schema({
+    category: {type: String, required: true, unique: true}
 })
 
-module.exports = mongoose.model('RoadmapCategory', roadmapSchema)
+module.exports = mongoose.model('RoadmapCategory', roadmapCategorySchema)
