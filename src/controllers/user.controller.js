@@ -1,14 +1,15 @@
-import User from "../models/User.js";
+const User = require("../models/User.js");
 
-export async function getProfile(req, res) {
-  const user = await User.findOne({ uid: req.user.uid })
-  res.json({ email: user.email, role: user.role })
+const loginUser = async (req, res) => {
+  try {
+    const roadmap = await User.findById(req.params.id)
+    if (!roadmap) return res.status(404).json({ error: "User not found" })
+    res.status(200).json(roadmap)
+  } catch (error) {
+    res.status(500).json({ error: "Error getting the User" })
+  }
 }
 
-export async function adminOnlyRoute(req, res) {
-  const user = await User.findOne({ uid: req.user.uid })
-  if (user.role !== "admin") {
-    return res.status(403).send("Access denied")
-  }
-  res.send("Welcome, admin!")
+module.exports = {
+  loginUser
 }
