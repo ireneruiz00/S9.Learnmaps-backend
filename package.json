@@ -1,0 +1,28 @@
+{
+  "name": "s9.learnmaps-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ireneruiz00/S9.Learnmaps-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ireneruiz00/S9.Learnmaps-backend/issues"
+  },
+  "homepage": "https://github.com/ireneruiz00/S9.Learnmaps-backend#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "firebase-admin": "^13.4.0",
+    "mongoose": "^8.17.1"
+  }
+}
