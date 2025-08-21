@@ -15,7 +15,7 @@ connectDB()
 
 // Rutas
 app.use("/api/roadmaps", require("./src/routes/roadmap.routes"))
-app.use("/api/login", require("./src/routes/user.routes")) 
+app.use("/api/user", require("./src/routes/user.routes")) 
 
 // Servidor escuchando
 app.listen(PORT, () => {
