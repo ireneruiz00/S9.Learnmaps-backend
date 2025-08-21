@@ -1,9 +1,9 @@
 const express = require( "express")
 const router = express.Router()
 const ctrl = require("../controllers/user.controller")
-const verifyToken = require("../middleware/verifyToken.js")
+const auth = require("../middleware/auth.js")
 
 
-router.get("/", verifyToken, ctrl.loginUser)
+router.get("/", auth, ctrl.loginUser)
 
 module.exports = router
