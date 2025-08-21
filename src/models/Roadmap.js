@@ -6,8 +6,10 @@ const tagSchema = new mongoose.Schema({
   order: { type: Number, default: 0 },
   content: String,
   status: { type: String, enum: ['checked', 'unchecked'], default: 'unchecked'},
-  children: [this] // soporte para anidación infinita
-}) 
+}, { _id: true })
+
+tagSchema.add({ children: [tagSchema] });
+
 
 const roadmapSchema = new mongoose.Schema({
     title: {type: String, required: true},
@@ -18,7 +20,9 @@ const roadmapSchema = new mongoose.Schema({
     durationWeeks: Number,
     status: { type: String, enum: ["active", "completed"], required: true },
     createdAt: {type: Date, default: Date.now},
+    lastEditedAt: { type: Date, default: Date.now },
     user: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
+    savedBy: [{ type: String }], // UIDs que guardaron este roadmap
 })
 
 module.exports = mongoose.model('Roadmap', roadmapSchema)
