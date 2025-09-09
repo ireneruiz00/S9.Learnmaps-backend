@@ -14,7 +14,12 @@ const updateProfile = async (req, res) => {
   try {
     const user = await User.findOneAndUpdate(
       { firebaseUID: req.user.uid },
-      { username: req.body.username, bio: req.body.bio },
+      { username: req.body.username, 
+        bio: req.body.bio, 
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        photoUrl: req.body.photoUrl, 
+      },
       { new: true }
     )
     res.status(200).json(user)
@@ -22,5 +27,6 @@ const updateProfile = async (req, res) => {
     res.status(400).json({ error: "Error updating profile" })
   }
 }
+
 
 module.exports = { getCurrentUser, updateProfile }
