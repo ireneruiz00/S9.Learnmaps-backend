@@ -1,4 +1,5 @@
 const Roadmap = require('../models/Roadmap')
+const RoadmapCategory = require('../models/RoadmapCategory')
 const User = require('../models/User')
 
 const getRoadmapById = async (req, res) => {
@@ -25,9 +26,10 @@ const getPublicRoadmaps = async (req, res) => {
   }
 }
 
+//uid o mongoId
 const getMyRoadmaps = async (req, res) => {
   try {
-    const roadmaps = await Roadmap.find({ user: req.user.uid }).sort({ lastEditedAt: -1 })
+    const roadmaps = await Roadmap.find({ user: req.user.mongoId }).sort({ lastEditedAt: -1 })
     res.status(200).json(roadmaps)
   } catch (error) {
     res.status(500).json({ error: "Error getting the roadmaps" })
@@ -45,7 +47,7 @@ const createRoadmap = async (req, res) => {
       tags,
       durationWeeks,
       status,
-      user: req.user.uid
+      user: req.user.mongoId
     })
     await newRoadmap.save()
     res.status(201).json(newRoadmap)
@@ -84,8 +86,10 @@ const copyRoadmap = async (req, res) => {
 const updateRoadmap = async (req, res) => {
   try {
     const roadmap = await Roadmap.findById(req.params.id)
+    
     if (!roadmap) return res.status(404).json({ error: "Roadmap not found" })
-    if (roadmap.user.toString() !== req.user.mongoId) {
+    
+      if (roadmap.user.toString() !== req.user.mongoId) {
       return res.status(403).json({ message: "Not authorized" });
     }
 
@@ -101,9 +105,11 @@ const updateRoadmap = async (req, res) => {
 const deleteRoadmap = async (req, res) => {
   try {
     const roadmap = await Roadmap.findById(req.params.id)
+    
     if (!roadmap) return res.status(404).json({ error: "Roadmap not found" })
-    if (roadmap.user.toString() !== req.user.mongoId) {
-      return res.status(403).json({ message: "Not authorized" });
+    
+      if (roadmap.user.toString() !== req.user.mongoId) {
+      return res.status(403).json({ message: "Not authorized" })
     }
 
     await roadmap.deleteOne()
@@ -116,62 +122,80 @@ const deleteRoadmap = async (req, res) => {
 const saveRoadmap = async (req, res) => {
   try {
     const roadmap = await Roadmap.findById(req.params.id);
-    if (!roadmap) return res.status(404).json({ error: "Roadmap not found" });
+    if (!roadmap) return res.status(404).json({ error: "Roadmap not found" })
 
     await Roadmap.findByIdAndUpdate(req.params.id, {
       $addToSet: { savedBy: req.user.uid }
-    });
+    })
     await User.findByIdAndUpdate(req.user.mongoId, {
       $addToSet: { savedRoadmaps: req.params.id }
-    });
+    })
 
-    res.status(200).json({ message: "Roadmap saved" });
+    res.status(200).json({ message: "Roadmap saved" })
   } catch (error) {
-    res.status(500).json({ error: "Error saving roadmap" });
+    res.status(500).json({ error: "Error saving roadmap" })
   }
 }
 
 const unsaveRoadmap = async (req, res) => {
   try {
-    const roadmap = await Roadmap.findById(req.params.id);
-    if (!roadmap) return res.status(404).json({ error: "Roadmap not found" });
+    const roadmap = await Roadmap.findById(req.params.id)
+    if (!roadmap) return res.status(404).json({ error: "Roadmap not found" })
 
     await Roadmap.findByIdAndUpdate(req.params.id, {
       $pull: { savedBy: req.user.uid }
-    });
+    })
     await User.findByIdAndUpdate(req.user.mongoId, {
       $pull: { savedRoadmaps: req.params.id }
-    });
+    })
 
-    res.status(200).json({ message: "Roadmap unsaved" });
+    res.status(200).json({ message: "Roadmap unsaved" })
   } catch (error) {
-    res.status(500).json({ error: "Error unsaving roadmap" });
+    res.status(500).json({ error: "Error unsaving roadmap" })
   }
 }
 
 const getSavedRoadmaps = async (req, res) => {
   try {
-    const user = await User.findById(req.user.mongoId).populate("savedRoadmaps");
-    res.status(200).json(user.savedRoadmaps);
+    const user = await User.findById(req.user.mongoId).populate("savedRoadmaps")
+    res.status(200).json(user.savedRoadmaps)
   } catch (error) {
-    res.status(500).json({ error: "Error fetching saved roadmaps" });
+    res.status(500).json({ error: "Error fetching saved roadmaps" })
   }
 }
 
 const searchRoadmaps = async (req, res) => {
   try {
-    const { q } = req.query
-    const regex = new RegExp(q, "i") // case-insensitive
-    const roadmaps = await Roadmap.find({
-      visibility: "public",
-      $or: [
-        { title: regex },
-        { description: regex }
-      ]
-    })
+    const { q, category, tags } = req.query
+    const query = { visibility: "public" }
+
+    if (q) {
+      const regex = new RegExp(q, "i") // case-insensitive
+      query.$or = [{ title: regex }, { description: regex }]
+    }
+
+    if (category) {
+      query.category = category // ID de la categoría
+    }
+
+    if (tags) {
+      const tagArray = tags.split(",")
+      query["tags.title"] = { $in: tagArray }
+    }
+
+    const roadmaps = await Roadmap.find(query)
     res.status(200).json(roadmaps)
   } catch (error) {
     res.status(500).json({ error: "Error searching roadmaps" })
+  }
+}
+
+const getCategories = async (req, res) => {
+  try {
+    const categories = await RoadmapCategory.find().sort({ category: 1 })
+    res.status(200).json(categories);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching categories" })
   }
 }
 
@@ -186,5 +210,6 @@ module.exports = {
   saveRoadmap,
   unsaveRoadmap,
   getSavedRoadmaps,
-  searchRoadmaps
+  searchRoadmaps,
+  getCategories
 }
