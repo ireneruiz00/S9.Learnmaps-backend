@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const RoadmapCategory = require("./models/RoadmapCategory");
+const RoadmapCategory = require("./src/models/RoadmapCategory");
 
 const categories = [
   { category: "Technology" },
@@ -22,7 +22,7 @@ async function seed() {
     await RoadmapCategory.deleteMany({})
     await RoadmapCategory.insertMany(categories)
 
-    console.log("Seed completado: categorías insertadas.")
+    console.log("Seed completed: categories inserted.")
     process.exit()
   } catch (err) {
     console.error(err)
