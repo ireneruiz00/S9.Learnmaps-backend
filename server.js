@@ -19,7 +19,7 @@ const connectDB = require("./src/config/db")
 connectDB()
 
 // Rutas
-app.use("/api/roadmaps", require("./src/routes/roadmap.routes"))
+app.use("/api/learnmap", require("./src/routes/roadmap.routes"))
 app.use("/api/categories", require("./src/routes/category.routes"))
 app.use("/api/user", require("./src/routes/user.routes")) 
 
