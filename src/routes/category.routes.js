@@ -1,8 +1,9 @@
 const express = require("express")
-const { getCategories } = require("../controllers/roadmap.controller")
+const ctrl = require("../controllers/category.controller")
+
 
 const router = express.Router()
 
-router.get("/", getCategories)
+router.get("/", ctrl.getCategories)
 
 module.exports = router
