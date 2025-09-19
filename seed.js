@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const RoadmapCategory = require("./src/models/RoadmapCategory");
+require("dotenv").config()
 
 const categories = [
   { category: "Technology" },
@@ -16,7 +17,7 @@ const categories = [
 
 async function seed() {
   try {
-    await mongoose.connect("mongodb://localhost:27017/learnmaps")
+    await mongoose.connect(process.env.MONGO_URI)
 
     // Evita duplicados borrando antes
     await RoadmapCategory.deleteMany({})

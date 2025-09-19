@@ -7,7 +7,7 @@ const getRoadmapById = async (req, res) => {
     const roadmap = await Roadmap.findById(req.params.id)
     if (!roadmap) return res.status(404).json({ error: "Roadmap not found" })
 
-    if (roadmap.visibility === "private" && roadmap.user !== req.user.uid) {
+    if (roadmap.visibility === "private" && roadmap.user.toString() !== req.user.mongoId) {
       return res.status(403).json({ message: "Not authorized" })
     }
 
@@ -73,7 +73,7 @@ const copyRoadmap = async (req, res) => {
       tags: roadmap.tags,
       durationWeeks: roadmap.durationWeeks,
       status: roadmap.status,
-      user: req.user.uid
+      user: req.user.mongoId
     })
 
     await copy.save()
@@ -83,15 +83,41 @@ const copyRoadmap = async (req, res) => {
   }
 }
 
+const patchRoadmap = async (req, res) => {
+  console.log("PATCH body recibido:", req.body); // <-- aquí
+  console.log("PATCH params recibidos:", req.params);
+  try {
+    const update = {
+      lastEditedAt: Date.now(),
+    };
+    if (req.body.nodes) update.nodes = req.body.nodes;
+    if (req.body.edges) update.edges = req.body.edges;
+
+    const roadmap = await Roadmap.findByIdAndUpdate(
+      req.params.id,
+      update,
+      { new: true, runValidators: true }
+    );
+
+    if (!roadmap) return res.status(404).json({ error: "Roadmap not found" });
+
+    res.status(200).json(roadmap)
+   
+  } catch (error) {
+    console.error("❌ Error patching roadmap:", error); // <--- agrega esto
+    res.status(400).json({ error: error.message })
+  }
+}
+
 const updateRoadmap = async (req, res) => {
   try {
     const roadmap = await Roadmap.findById(req.params.id)
     
     if (!roadmap) return res.status(404).json({ error: "Roadmap not found" })
     
-      if (roadmap.user.toString() !== req.user.mongoId) {
-      return res.status(403).json({ message: "Not authorized" });
-    }
+    // if (roadmap.user.toString() !== req.user.mongoId) {
+    //   return res.status(403).json({ message: "Not authorized" });
+    // }
 
     Object.assign(roadmap, req.body, { lastEditedAt: Date.now() })
     await roadmap.save()
@@ -190,26 +216,17 @@ const searchRoadmaps = async (req, res) => {
   }
 }
 
-const getCategories = async (req, res) => {
-  try {
-    const categories = await RoadmapCategory.find().sort({ category: 1 })
-    res.status(200).json(categories);
-  } catch (error) {
-    res.status(500).json({ error: "Error fetching categories" })
-  }
-}
-
 module.exports = {
   getRoadmapById,
   getMyRoadmaps,
   getPublicRoadmaps,
   createRoadmap,
   copyRoadmap,
+  patchRoadmap,
   updateRoadmap,
   deleteRoadmap,
   saveRoadmap,
   unsaveRoadmap,
   getSavedRoadmaps,
   searchRoadmaps,
-  getCategories
 }

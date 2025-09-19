@@ -19,6 +19,7 @@ router.post("/:id/save", auth, ctrl.saveRoadmap)
 router.delete("/:id/save", auth, ctrl.unsaveRoadmap)
 
 // --- Edición y borrado ---
+router.patch("/:id", auth, ctrl.patchRoadmap)
 router.put("/:id", auth, ctrl.updateRoadmap)
 router.delete("/:id", auth, ctrl.deleteRoadmap)
 

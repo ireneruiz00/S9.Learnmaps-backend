@@ -18,10 +18,6 @@ const edgeSchema = new mongoose.Schema({
   animated: { type: Boolean, default: false },
 })
 
-
-const mongoose = require("mongoose");
-
-
 const roadmapSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
