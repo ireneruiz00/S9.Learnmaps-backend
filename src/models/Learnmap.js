@@ -14,16 +14,18 @@ const edgeSchema = new mongoose.Schema({
   id: { type: String, required: true },
   source: { type: String, required: true },
   target: { type: String, required: true },
+  sourceHandle: { type: String },
+  targetHandle: { type: String },
   type: { type: String, default: "default" }, // straight, smoothstep, etc.
   animated: { type: Boolean, default: false },
 })
 
-const roadmapSchema = new mongoose.Schema(
+const learnmapSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     category: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "RoadmapCategory",
+      ref: "LearnmapCategory",
       required: true,
     },
     description: String,
@@ -36,7 +38,7 @@ const roadmapSchema = new mongoose.Schema(
     edges: [edgeSchema],
 
     // Opcional: etiquetas extra
-    tags: [{ type: String }],
+    tags: { type: [String], default: [] },
 
     durationWeeks: Number,
     status: { 
@@ -53,9 +55,9 @@ const roadmapSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    savedBy: [{ type: String }], // IDs de usuarios que guardan el roadmap
+    savedBy: [{ type: String }], // IDs de usuarios que guardan el learnmap
   },
   { minimize: false } // evita que mongoose limpie objetos vacíos
 )
 
-module.exports = mongoose.model("Roadmap", roadmapSchema)
+module.exports = mongoose.model("Learnmap", learnmapSchema)
