@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const RoadmapCategory = require("./src/models/RoadmapCategory");
+const LearnmapCategory = require("./src/models/LearnmapCategory");
 require("dotenv").config()
 
 const categories = [
@@ -7,6 +7,7 @@ const categories = [
   { category: "Science" },
   { category: "Design" },
   { category: "Business" },
+  { category: "Social Sciences" },
   { category: "Arts & Humanities" },
   { category: "Health & Medicine" },
   { category: "Education" },
@@ -20,8 +21,8 @@ async function seed() {
     await mongoose.connect(process.env.MONGO_URI)
 
     // Evita duplicados borrando antes
-    await RoadmapCategory.deleteMany({})
-    await RoadmapCategory.insertMany(categories)
+    await LearnmapCategory.deleteMany({})
+    await LearnmapCategory.insertMany(categories)
 
     console.log("Seed completed: categories inserted.")
     process.exit()

@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
   username: String,
   bio: String,
   createdAt: { type: Date, default: Date.now },
-  savedRoadmaps: [{ type: mongoose.Schema.Types.ObjectId, ref: "Roadmap" }]
+  savedLearnmaps: [{ type: mongoose.Schema.Types.ObjectId, ref: "Learnmap" }]
 
 })
 

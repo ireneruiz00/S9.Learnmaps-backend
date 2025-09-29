@@ -2,7 +2,7 @@ const User = require("../models/User.js");
 
 const getCurrentUser = async (req, res) => {
   try {
-    let user = await User.findOne({ firebaseUID: req.user.uid }).populate('savedRoadmaps')
+    let user = await User.findOne({ firebaseUID: req.user.uid }).populate('savedLearnmaps')
  if (!user) {
       // si no existe, lo creamos automáticamente
       user = await User.create({
