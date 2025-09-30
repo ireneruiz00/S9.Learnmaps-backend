@@ -20,7 +20,6 @@ async function seed() {
   try {
     await mongoose.connect(process.env.MONGO_URI)
 
-    // Evita duplicados borrando antes
     await LearnmapCategory.deleteMany({})
     await LearnmapCategory.insertMany(categories)
 
