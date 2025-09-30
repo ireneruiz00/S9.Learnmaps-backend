@@ -5,13 +5,13 @@ const User = require('../models/User')
 const getLearnmapById = async (req, res) => {
   try {
     const learnmap = await Learnmap.findById(req.params.id)
-      .populate("user", "firstName lastName username")
+      .populate("user", "_id firstName lastName username")
       .populate("category")
 
     if (!learnmap) return res.status(404).json({ error: "Learnmap not found" })
 
-    if (learnmap.visibility === "private" && learnmap.user.toString() !== req.user.mongoId) {
-      return res.status(403).json({ message: "Not authorized" })
+    if (learnmap.visibility === "private" && learnmap.user._id.toString() !== req.user.mongoId) {
+      return res.status(403).json({ message: "Not authorized" });
     }
 
     res.status(200).json(learnmap)
