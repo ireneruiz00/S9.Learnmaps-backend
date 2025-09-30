@@ -1,8 +1,11 @@
 const express = require( "express")
 const router = express.Router()
-// import { verifyToken } from "../middleware/verifyToken.js"
-const ctrl = require("../controllers/user.controller")
+const { getCurrentUser, updateProfile, createUser } = require('../controllers/user.controller')
+const auth = require("../middleware/auth.js")
 
-router.get("/", ctrl.loginUser)
+
+router.get('/me', auth, getCurrentUser)
+router.post('/', auth, createUser)
+router.put('/me', auth, updateProfile)
 
 module.exports = router
